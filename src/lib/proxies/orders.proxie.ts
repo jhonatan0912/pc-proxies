@@ -37,6 +37,16 @@ export class OrdersProxy {
   getAll(): Observable<GetOrderDto[]> {
     return this.http.get(this.path).pipe(mergeMap((data: any) => of(data.map((i: any) => new GetOrderDto().fromJS(i)))));
   }
+
+  updateOrderStatus(orderId: string, status: OrderStatus): Observable<void> {
+    const path = `${this.path}/update-order-status`;
+    const body = {
+      orderId,
+      status
+    };
+
+    return this.http.update(path, body);
+  }
 }
 
 export class CreateOrderDto {
@@ -233,5 +243,5 @@ export const formatOrderStatus = (status: OrderStatus): string => {
   return status === 'pending'
     ? 'Pendiente' : status === 'progress'
       ? 'En preparación' : status === 'completed'
-        ? 'Completado' : 'Cancelado';
+        ? 'Completado' : 'Anulado';
 };

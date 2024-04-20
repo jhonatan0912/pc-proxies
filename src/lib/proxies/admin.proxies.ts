@@ -1,9 +1,9 @@
 import { Inject, Injectable, inject } from '@angular/core';
 import { AppHttpService } from 'pc-core';
 import { Observable, map } from 'rxjs';
+import { Environment } from '../interfaces';
 import { DeliveryType, OrderStatus, PaymentMethod, formatOrderStatus } from './orders.proxie';
 import { ProductDto } from './products.proxie';
-import { Environment } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,7 @@ export class AdminProxy {
     return this.http.get(url).pipe(map((data: any) => data.map((i: any) => new ProductDto().fromJS(i))));
   }
 
-  changeOrderStatus(orderId: string, status: OrderStatus): Observable<void> {
+  updateOrderStatus(orderId: string, status: OrderStatus): Observable<void> {
     const path = `${this.path}/update-order-status`;
     const body = {
       orderId,
