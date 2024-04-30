@@ -18,14 +18,15 @@ export class ProductsProxy {
     return `${this.environment.api}/api/v1/products`;
   }
 
-  create(image: File, name: string, price: number, description: string): Observable<ProductDto> {
-    const form = new FormData();
-    form.append('image', image);
-    form.append('name', name);
-    form.append('price', price.toString());
-    form.append('description', description);
+  create(image: string, name: string, price: number, description: string): Observable<ProductDto> {
+    const body = {
+      image,
+      name,
+      price: price.toString(),
+      description
+    };
 
-    return this.http.post(this.path, form).pipe(mergeMap((data: any) => of(new ProductDto().fromJS(data))));
+    return this.http.post(this.path, body).pipe(mergeMap((data: any) => of(new ProductDto().fromJS(data))));
   };
 
   get(id: string): Observable<ProductDto> {
@@ -88,13 +89,13 @@ export class ProductsProxy {
     return this.http.update(url, body);
   }
 
-  updateImage(id: string, image: File | undefined): Observable<ProductDto> {
+  updateImage(id: string, image: string | undefined): Observable<ProductDto> {
     const url = `${this.path}/update-image/${id}`;
-    const form = new FormData();
-    if (image)
-      form.append('image', image);
+    const body = {
+      image
+    };
 
-    return this.http.update(url, form).pipe(mergeMap((data: any) => of(new ProductDto().fromJS(data))));
+    return this.http.update(url, body).pipe(mergeMap((data: any) => of(new ProductDto().fromJS(data))));
   }
 
   delete(id: string): Observable<void> {

@@ -17,13 +17,14 @@ export class CategoriesProxy {
     return `${this.environment.api}/api/v1/categories`;
   }
 
-  create(icon: File, name: string, slug: string): Observable<CategoryDto> {
-    const form = new FormData();
-    form.append('icon', icon);
-    form.append('name', name);
-    form.append('slug', slug);
+  create(icon: string, name: string, slug: string): Observable<CategoryDto> {
+    const body = {
+      icon,
+      name,
+      slug
+    };
 
-    return this.http.post(this.path, form).pipe(mergeMap((data: any) => of(new CategoryDto().fromJS(data))));
+    return this.http.post(this.path, body).pipe(mergeMap((data: any) => of(new CategoryDto().fromJS(data))));
   }
 
   get(id: string): Observable<CategoryDto> {
@@ -43,14 +44,13 @@ export class CategoriesProxy {
     return this.http.update(`${this.path}/${id}`, form).pipe(mergeMap((data: any) => of(new CategoryDto().fromJS(data))));
   }
 
-  updateIcon(id: string, icon: File | undefined): Observable<CategoryDto> {
+  updateIcon(id: string, icon: string | undefined): Observable<CategoryDto> {
     const url = `${this.path}/update-icon/${id}`;
-    const form = new FormData();
+    const body = {
+      icon
+    };
 
-    if (icon)
-      form.append('icon', icon);
-
-    return this.http.update(url, form).pipe(mergeMap((data: any) => of(new CategoryDto().fromJS(data))));
+    return this.http.update(url, body).pipe(mergeMap((data: any) => of(new CategoryDto().fromJS(data))));
   }
 
   delete(id: string): Observable<void> {
@@ -93,7 +93,7 @@ export const getSlug = (name: string): string => {
 };
 
 export const onFileChange = (event: any): File | undefined => {
-  if (event.target.files === 0) return;
+  if (event.target.files.length === 0) return;
 
   return event.target.files[0];
 };
